@@ -6,6 +6,7 @@ import Layout from './hoc/Layout/Layout';
 import Uploads from './containers/Uploads/Uploads';
 import Signup from './containers/Signup/Signup';
 import Logout from './containers/Auth/Logout/Logout';
+import HomePage from './containers/HomePage/HomePage';
 import './App.scss';
 
 
@@ -18,24 +19,24 @@ class App extends Component {
   render() {
 
     let routes = (
-      <Route path="/signup" component={Signup} />
+      <Switch>
+        <Route path="/signup" component={Signup} />
+        <Route path="/" component={HomePage} />
+      </Switch>
     );
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
           <Route path="/logout" component={Logout} />
-          <Route path="/uploads" component={Uploads} />
+          <Route exact path='/' component={Uploads} />
         </Switch>
       );
     }
     return (
       <BrowserRouter >
         <Layout isAuth={this.props.isAuthenticated}>
-          <Switch>
-            <Route exact path='/' component={Uploads} />
-            {routes}
-            {this.props.children}
-          </Switch>
+          {routes}
+          {this.props.children}
         </Layout>
       </BrowserRouter >
     );

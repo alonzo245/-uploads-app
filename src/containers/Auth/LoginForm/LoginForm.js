@@ -59,7 +59,7 @@ class LoginForm extends Component {
 
   componentDidMount() {
     if (this.props.authRedirectPath && this.props.isAuthenticated) {
-      // this.props.modalClosed();
+
     }
 
     if (this.props.authRedirectPath !== '/') {
@@ -67,14 +67,9 @@ class LoginForm extends Component {
     }
   }
 
-  componentDidUpdate() {
-
-  }
 
   render() {
-
     let authRedirect = null;
-
     if (this.props.authRedirectPath && this.props.isAuthenticated) {
       authRedirect = <Redirect to="/" />;
     }

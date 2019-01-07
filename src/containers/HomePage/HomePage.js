@@ -8,8 +8,8 @@ class HomePage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Modal>
-          <LoginForm />
+        <Modal show={true}>
+          <LoginForm modalClosed={this.loginInCancelHandler} />
         </Modal>
       </React.Fragment>
     );
