@@ -1,0 +1,88 @@
+.SideDrawer {
+  position: fixed;
+  width: 380px;
+  max-width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.932);
+  padding: 32px 16px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease-out;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  .CloseSidrawer{
+    color: white;
+    font-size: 36px;
+    margin-top: 4px;
+    margin-left: -7px;
+  }
+  .Version{
+    margin-top:auto;
+    color: gray;
+    font-size: 13px;
+  }
+
+  .TopMenu {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .Logo {
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 13px;
+    height: auto;
+  }
+
+  nav {
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-flow: column;
+      flex-flow: column;
+      -ms-flex-align: center;
+      align-items: center;
+      height: 100%;
+
+      li {
+          margin: 0px 0;
+          box-sizing: border-box;
+          display: block;
+          width: 100%;
+          border-bottom: 1px solid #565656;
+          padding: 10px 0;
+          cursor: pointer;
+        a {
+          color: white;
+          
+        }
+      }
+    }
+  }
+}
+
+/* @media (min-width: 500px) {
+    .SideDrawer {
+        display: none;
+    }
+} */
+
+.Open {
+  transform: translateX(0);
+}
+
+.Close {
+  transform: translateX(-100%);
+}
+
+.Logo {
+  height: 11%;
+  margin-bottom: 32px;
+}

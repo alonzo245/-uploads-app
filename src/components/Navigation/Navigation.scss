@@ -1,0 +1,77 @@
+.Navigation {
+	ul {
+    display: flex;
+    height: 32px;
+    margin-bottom: 5px;
+    align-items: center;
+    padding: 0 10px;
+    list-style: none;
+		
+		li {
+			a {
+				color: white;
+				font-weight: 400;
+				padding: 7px 10px;
+				font-size: 14px;
+				transition: background .125s ease;
+				border-radius: 3px;
+				margin: 0 5px;
+				
+				&:hover {
+					background: red;
+					cursor: pointer;
+					text-decoration: none;
+				}
+				.Link{
+					color: white;
+				}
+	
+				&.Active {
+					background: red;
+					cursor: pointer;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}
+// DARK THEME /////////////////////////////////////////////////
+.Dark {
+	.Navigation {
+		ul {
+			display: flex;
+			height: 32px;
+			margin-bottom: 5px;
+			align-items: center;
+			padding: 0 10px;
+			list-style: none;
+			
+			li {
+				a {
+					color: white;
+					font-weight: 400;
+					padding: 7px 10px;
+					font-size: 14px;
+					transition: background .125s ease;
+					border-radius: 3px;
+					margin: 0 5px;
+					
+					&:hover {
+						background: rgb(48, 48, 48);
+						cursor: pointer;
+						text-decoration: none;
+					}
+					.Link{
+						color: white;
+					}
+		
+					&.Active {
+						background: #000;
+						cursor: pointer;
+						text-decoration: underline;
+					}
+				}
+			}
+		}
+	}
+}

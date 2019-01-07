@@ -1,0 +1,72 @@
+.Header {
+  background: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 );
+  display: flex;
+  padding: 9px 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  box-sizing: border-box;
+  z-index: 5;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 58px;
+
+  .Logo {
+    margin-right: 10px;
+    transition: margin 0.125s ease;
+  }
+
+  .NavWrapper {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    width: 90%;
+
+    .RightItems {
+      flex: 1;
+      text-align: right;
+    }
+
+    .LogoImage {
+      float: left;
+    }
+  }
+  .Version {
+    color: white;
+    font-size: 11px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    padding: 2px 5px;
+    box-sizing: border-box;
+    height: 23px;
+  }
+
+  @media (max-width: 576px) {
+    & {
+      display: block;
+      padding: 20px 8px 0px 6px;
+      text-align: center;
+      position: relative;
+      .Logo {
+        margin-right: 38px auto 0px auto;
+        transition: margin 0.125s ease;
+      }
+      & .NavWrapper {
+        width: 100%;
+        margin: 13px 0;
+        display: flex;
+        padding: 0 8px;
+        display: none;
+
+        .RightItems {
+          flex: 1;
+          text-align: right;
+        }
+      }
+    }
+  }
+}

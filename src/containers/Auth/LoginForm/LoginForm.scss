@@ -1,0 +1,66 @@
+.LoginForm {
+  .text {
+    color: white;
+    display: inline-block;
+    margin-right: 11px;
+  }
+  h4{
+    color: red;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  a {
+    color: red;
+  }
+  input {
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    margin-bottom: 14px;
+    height: 37px;
+    width: 100%;
+    background: transparent;
+    color: #ffffff;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 0;
+    border: 2px solid rgba(245, 245, 241, 0.1);
+    outline: none;
+    border-radius: 37px;
+    padding: 0 10px;
+    pointer-events: all;
+    -webkit-transition: border 0.25s ease, width 0.125s ease 0.125s;
+    transition: border 0.25s ease, width 0.125s ease 0.125s;
+
+    &:focus {
+      border: 2px solid #e50914;
+      // width: 45%;
+
+      @media (max-width: 576px) {
+        //   width: 90%;
+      }
+    }
+  }
+
+  .LoginButton {
+    color: white;
+    font-weight: 400;
+    padding: 7px 10px;
+    font-size: 14px;
+    -webkit-transition: background 0.125s ease;
+    transition: background 0.125s ease;
+    border-radius: 18px;
+    margin: 1px 0px 8px 0px;
+    background: red;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    
+    &:hover {
+      background-color: rgb(73, 73, 73);
+    }
+  }
+}
