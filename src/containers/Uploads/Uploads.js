@@ -1,44 +1,46 @@
 import React, { Component } from 'react';
 import axios from '../../axios';
-import './Social.scss';
+import './Uploads.scss';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
-class Social extends Component {
+class Uploads extends Component {
   state = {
-    posts: [],
-    totalPosts: 0,
-    updatePosts: false
-  }
-
-
-  handleUpdatePosts = () => {
-    console.log('this.state.updatePosts', this.state.updatePosts)
-    this.updatePosts()
+    files: [],
   }
 
   updatePosts() {
     const token = localStorage.getItem('token');
-    if (token) {
-      
+    const userId = localStorage.getItem('userId');
+
+    if (token && userId) {
+      console.log(token)
+      console.log(userId)
       let baseUrl = '';
       if (window.location.hostname === "localhost") {
         baseUrl = window.location.protocol + '//localhost:3000';
       }
-      let url = baseUrl + '/feed/posts';
-      
+      let url = baseUrl + '/upload/files';
+
       const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': token
-      }
-      axios.get(url, null, headers)
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+      };
+
+      const data = {
+        userId: userId
+      };
+
+      axios.post(url, data, headers)
         .then(res => {
 
-          this.setState({
-            ...this.state,
-            posts: res.data.posts,
-            totlaPosts: res.data.totlaItems
-          })
-          console.log(res.data.posts[0])
+          // this.setState({
+          //   ...this.state,
+          //   posts: res.data.posts,
+          //   totlaPosts: res.data.totlaItems
+          // })
+          console.log(res.data.info.uploads)
         })
         .catch(err => {
           console.log('err', err)
@@ -50,10 +52,10 @@ class Social extends Component {
   }
 
   render() {
-    if (!this.state.posts.length) {
+    if (!this.state.files.length) {
       return (
         <div className="Social">
- 
+
           <Spinner />
         </div>
       );
@@ -61,11 +63,11 @@ class Social extends Component {
     else {
       return (
         <div className="Social">
-          
+
         </div>
       )
     }
   }
 };
 
-export default Social;
+export default Uploads;

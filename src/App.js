@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
 import Layout from './hoc/Layout/Layout';
 import HomePage from './containers/HomePage/HomePage';
-import Social from './containers/Social/Social';
+import Uploads from './containers/Uploads/Uploads';
 import Signup from './containers/Signup/Signup';
 import Logout from './containers/Auth/Logout/Logout';
 import './App.scss';
@@ -25,7 +25,7 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/logout" component={Logout} />
-          <Route path="/social" component={Social} />
+          <Route path="/uploads" component={Uploads} />
         </Switch>
       );
     }
@@ -33,7 +33,7 @@ class App extends Component {
       <BrowserRouter >
         <Layout isAuth={this.props.isAuthenticated}>
           <Switch>
-            <Route exact path='/' component={HomePage} />
+            <Route exact path='/' component={Uploads} />
             {routes}
             {this.props.children}
           </Switch>

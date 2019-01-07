@@ -1,6 +1,6 @@
 {
-  "short_name": "YOUFLIX",
-  "name": "YOUFLIX",
+  "short_name": "file-storage",
+  "name": "file-storage",
   "icons": [
     {
       "src": "favicon.ico",
