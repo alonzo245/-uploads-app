@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
 import Layout from './hoc/Layout/Layout';
-import HomePage from './containers/HomePage/HomePage';
 import Uploads from './containers/Uploads/Uploads';
 import Signup from './containers/Signup/Signup';
 import Logout from './containers/Auth/Logout/Logout';
