@@ -8,8 +8,7 @@ import Moment from 'react-moment';
 
 class Uploads extends Component {
   state = {
-    files: [],
-    selectedFile: null
+    files: []
   };
 
   componentDidMount() {
@@ -117,10 +116,14 @@ class Uploads extends Component {
 
       axios.post(url, formData, config)
         .then(res => {
+          console.log(res.message)
+          if(!res.data.upload){
+            return false;
+          }
+
           let updatedFiles = this.state.files.slice();
           updatedFiles.push(res.data.upload);
           this.setState({
-            // selectedFile: null,
             files: updatedFiles
           })
         })
