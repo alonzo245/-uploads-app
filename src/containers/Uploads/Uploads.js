@@ -8,9 +8,11 @@ import './Uploads.scss';
 class Uploads extends Component {
   state = {
     files: [],
+    selectedFile: null
   };
 
-  updatePosts() {
+  // GET 
+  getFiles() {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
@@ -45,17 +47,11 @@ class Uploads extends Component {
     }
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('A name was submitted: ' + this.state.value);
-  }
-
   componentDidMount() {
-    this.updatePosts()
+    this.getFiles()
   }
 
   handleGetMetadata = (fileId = null, fileName = null, privacy = false, metadata = false) => {
-
     if (!fileName) {
       return false;
     }
@@ -90,8 +86,60 @@ class Uploads extends Component {
       });
   }
 
+  // INSERT 
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    if (token && userId) {
+      let baseUrl = '';
+      if (window.location.hostname === "localhost") {
+        baseUrl = window.location.protocol + '//localhost:3000';
+      }
+      let url = baseUrl + '/upload/file';
+
+      const headers = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer ' + token
+        },
+        onUploadProgress: progressEvent => {
+          console.log(progressEvent.loaded / progressEvent.total)
+        }
+      };
+
+      const formData = new FormData();
+      formData.append('fileUpload', this.state.selectedFile)
+      formData.append('userId', userId)
+      formData.append('privacy', false)
+
+
+      axios.post(url, formData, headers)
+        .then(res => {
+          console.log('res.data.upload', res.data.upload)
+          console.log('res.data.upload', this.state.files)
+          let updatedFiles = this.state.files.slice();
+          updatedFiles.push(res.data.upload);
+          this.setState({
+            selectedFile: null,
+            files: updatedFiles
+          })
+        })
+        .catch(err => {
+          console.log('err', err)
+        });
+    }
+  }
+
+  handleselectedFile = event => {
+    this.setState({
+      selectedFile: event.target.files[0]
+    });
+  }
+
   render() {
-    if (!this.state.files.length) {
+    if (!this.state.files) {
       return <Spinner />;
     }
     else {
@@ -99,8 +147,10 @@ class Uploads extends Component {
         <div className="Social">
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
-              <label htmlFor="exampleFormControlFile1">upload file</label>
-              <input type="file" className="form-control-file" id="exampleFormControlFile1" />
+              <input
+                type="file"
+                onChange={this.handleselectedFile}
+              />
               <input type="submit" value="Upload Image" name="submit" />
             </div>
           </form>
@@ -126,12 +176,8 @@ class Uploads extends Component {
                   <td>{file.uploadName}</td>
                   <td>{file.privacy ? 'yes' : 'no'}</td>
                   {/* <td>{file.creator}</td> */}
-                  <td>
-                    {file.createdAt}
-                  </td>
-                  <td>
-                    {file.updatedAt}
-                  </td>
+                  <td>{file.createdAt}</td>
+                  <td>{file.updatedAt}</td>
                   <td>
                     <button
                       onClick={() => this.handleGetMetadata(file._id, file.uploadName, file.privacy)}>
