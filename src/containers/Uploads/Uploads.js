@@ -4,12 +4,17 @@ import FD from 'js-file-download';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './Uploads.scss';
+import Moment from 'react-moment';
 
 class Uploads extends Component {
   state = {
     files: [],
     selectedFile: null
   };
+
+  componentDidMount() {
+    this.getFiles()
+  }
 
   // GET 
   getFiles() {
@@ -23,7 +28,7 @@ class Uploads extends Component {
       }
       let url = baseUrl + '/upload/files';
 
-      const headers = {
+      const config = {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
@@ -34,21 +39,16 @@ class Uploads extends Component {
         userId: userId
       };
 
-      axios.post(url, data, headers)
+      axios.post(url, data, config)
         .then(res => {
           this.setState({
             files: res.data.info.uploads
           });
-          console.log(res.data.info.uploads)
         })
         .catch(err => {
           console.log('err', err)
         });
     }
-  }
-
-  componentDidMount() {
-    this.getFiles()
   }
 
   handleGetMetadata = (fileId = null, fileName = null, privacy = false, metadata = false) => {
@@ -99,7 +99,7 @@ class Uploads extends Component {
       }
       let url = baseUrl + '/upload/file';
 
-      const headers = {
+      const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': 'Bearer ' + token
@@ -110,19 +110,17 @@ class Uploads extends Component {
       };
 
       const formData = new FormData();
-      formData.append('fileUpload', this.state.selectedFile)
-      formData.append('userId', userId)
-      formData.append('privacy', false)
+      formData.append('userId', userId);
+      formData.append('privacy', false);
+      formData.append('fileUpload', this.state.selectedFile);
 
 
-      axios.post(url, formData, headers)
+      axios.post(url, formData, config)
         .then(res => {
-          console.log('res.data.upload', res.data.upload)
-          console.log('res.data.upload', this.state.files)
           let updatedFiles = this.state.files.slice();
           updatedFiles.push(res.data.upload);
           this.setState({
-            selectedFile: null,
+            // selectedFile: null,
             files: updatedFiles
           })
         })
@@ -176,8 +174,12 @@ class Uploads extends Component {
                   <td>{file.uploadName}</td>
                   <td>{file.privacy ? 'yes' : 'no'}</td>
                   {/* <td>{file.creator}</td> */}
-                  <td>{file.createdAt}</td>
-                  <td>{file.updatedAt}</td>
+                  <td>
+                    <Moment format="DD/MM/YYYY HH:MM" date={file.createdAt} />
+                  </td>
+                  <td>
+                    <Moment format="DD/MM/YYYY HH:MM" date={file.updatedAt} />
+                  </td>
                   <td>
                     <button
                       onClick={() => this.handleGetMetadata(file._id, file.uploadName, file.privacy)}>
