@@ -4,6 +4,7 @@ import FD from 'js-file-download';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './Uploads.scss';
+import { FaFileDownload, FaInfoCircle, FaTrashAlt } from "react-icons/fa";
 import Moment from 'react-moment';
 
 class Uploads extends Component {
@@ -117,7 +118,7 @@ class Uploads extends Component {
       axios.post(url, formData, config)
         .then(res => {
           console.log(res.message)
-          if(!res.data.upload){
+          if (!res.data.upload) {
             return false;
           }
 
@@ -139,13 +140,54 @@ class Uploads extends Component {
     });
   }
 
+  handleInputCheckbox(fileIndex) {
+    console.log(this.state.files[fileIndex])
+  }
+
+  handleDeleteUpload(fileIndex) {
+    // console.log(this.state.files[fileIndex])
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      data: {
+        userId: userId
+      },
+      onUploadProgress: progressEvent => {
+        console.log(progressEvent.loaded / progressEvent.total)
+      }
+    };
+
+    let baseUrl = '';
+    if (window.location.hostname === "localhost") {
+      baseUrl = window.location.protocol + '//localhost:3000';
+    }
+    let url = baseUrl + '/upload/file/' + this.state.files[fileIndex]._id;
+
+
+    axios.delete(url, config)
+      .then(res => {
+        let updatedFiles = [...this.state.files];
+        this.setState({
+          files: updatedFiles
+        });
+      })
+      .catch(err => {
+        console.log('err', err)
+      });
+  }
+
   render() {
     if (!this.state.files) {
       return <Spinner />;
     }
     else {
       return (
-        <div className="Social">
+        <div className="Uploads">
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
               <input
@@ -167,16 +209,20 @@ class Uploads extends Component {
                 <th scope="col">updatedAt</th>
                 <th scope="col"></th>
                 <th scope="col"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {this.state.files.map((file, index) => (
                 <tr key={index}>
                   <th scope="row">{index}</th>
-                  {/* <td>{file._id}</td> */}
                   <td>{file.uploadName}</td>
-                  <td>{file.privacy ? 'yes' : 'no'}</td>
-                  {/* <td>{file.creator}</td> */}
+                  <td>
+                    <input type="checkbox" name="privacy"
+                      checked={file.privacy ? "checked" : ""}
+                      onChange={() => this.handleInputCheckbox(index)}
+                    />
+                  </td>
                   <td>
                     <Moment format="DD/MM/YYYY HH:MM" date={file.createdAt} />
                   </td>
@@ -184,16 +230,22 @@ class Uploads extends Component {
                     <Moment format="DD/MM/YYYY HH:MM" date={file.updatedAt} />
                   </td>
                   <td>
-                    <button
+                    <FaFileDownload
+                      className="ActionBtn"
                       onClick={() => this.handleGetMetadata(file._id, file.uploadName, file.privacy)}>
-                      Download
-                    </button>
+                    </FaFileDownload>
                   </td>
                   <td>
-                    <button
+                    <FaInfoCircle
+                      className="ActionBtn"
                       onClick={() => this.handleGetMetadata(file._id, file.uploadName, file.privacy, true)}>
-                      File Data
-                    </button>
+                    </FaInfoCircle>
+                  </td>
+                  <td>
+                    <FaTrashAlt
+                      className="ActionBtn"
+                      onClick={() => this.handleDeleteUpload(index)}>
+                    </FaTrashAlt>
                   </td>
                 </tr>
               ))}
