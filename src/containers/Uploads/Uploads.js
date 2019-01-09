@@ -172,6 +172,7 @@ class Uploads extends Component {
     axios.delete(url, config)
       .then(res => {
         let updatedFiles = [...this.state.files];
+        updatedFiles.splice(fileIndex, 1);
         this.setState({
           files: updatedFiles
         });
