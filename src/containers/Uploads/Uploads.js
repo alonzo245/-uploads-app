@@ -3,13 +3,17 @@ import axios from '../../axios';
 import FD from 'js-file-download';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import Modal from '../../components/UI/Modal/Modal';
 import './Uploads.scss';
 import { FaFileDownload, FaInfoCircle, FaTrashAlt } from "react-icons/fa";
 import Moment from 'react-moment';
 
 class Uploads extends Component {
   state = {
-    files: []
+    files: [],
+    selectedFile: null,
+    showDetails: false,
+    fileDetails: null
   };
 
   componentDidMount() {
@@ -78,8 +82,18 @@ class Uploads extends Component {
       .then(res => {
         if (!metadata) {
           FD(res, fileName);
+        } else {
+          let myString = '';
+          let i = 0;
+          const keys = Object.keys(res.data.upload);
+          for (i = 0; i < keys.length; i++) {
+            myString += '<strong>' + keys[i] + ':</strong> ' + res.data.upload[keys[i]] + ' <br/> ';
+          }
+          this.setState({
+            showDetails: true,
+            fileDetails: { __html: myString }
+          });
         }
-        console.log(res.data.info.uploads)
       })
       .catch(err => {
         console.log('err', err)
@@ -125,7 +139,8 @@ class Uploads extends Component {
           let updatedFiles = this.state.files.slice();
           updatedFiles.push(res.data.upload);
           this.setState({
-            files: updatedFiles
+            files: updatedFiles,
+            selectedFile: null
           })
         })
         .catch(err => {
@@ -138,14 +153,50 @@ class Uploads extends Component {
     this.setState({
       selectedFile: event.target.files[0]
     });
+    event.target.value = null;
   }
 
   handleInputCheckbox(fileIndex) {
-    console.log(this.state.files[fileIndex])
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    };
+    // console.log(this.state.files[fileIndex].privacy)
+    const { privacy, uploadUrl } = this.state.files[fileIndex];
+    const data = {
+      userId: userId,
+      privacy: !privacy,
+      uploadUrl: uploadUrl
+    };
+
+    let baseUrl = '';
+    if (window.location.hostname === "localhost") {
+      baseUrl = window.location.protocol + '//localhost:3000';
+    }
+    let url = baseUrl + '/upload/file/' + this.state.files[fileIndex]._id;
+
+
+    axios.put(url, data, config)
+      .then(res => {
+        // console.log(res)
+        const updatedFiles = [...this.state.files];
+        // console.log(updatedFiles)
+        updatedFiles[fileIndex] = res.data.upload
+        this.setState({
+          files: updatedFiles
+        });
+      })
+      .catch(err => {
+        console.log('err', err)
+      });
   }
 
   handleDeleteUpload(fileIndex) {
-    // console.log(this.state.files[fileIndex])
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
@@ -182,6 +233,10 @@ class Uploads extends Component {
       });
   }
 
+  showDetailsCancelHandler = () => {
+    this.setState({ showDetails: false });
+  }
+
   render() {
     if (!this.state.files) {
       return <Spinner />;
@@ -189,6 +244,12 @@ class Uploads extends Component {
     else {
       return (
         <div className="Uploads">
+          <Modal
+            show={this.state.showDetails}
+            modalClosed={this.showDetailsCancelHandler}
+          >
+            <div dangerouslySetInnerHTML={this.state.fileDetails} />;
+          </Modal>
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
               <input

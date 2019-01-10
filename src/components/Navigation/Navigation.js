@@ -10,7 +10,7 @@ const links = [
 
 const authLinks = [
   ...links,
-  { href: "/uploads", name: "uploads", exact: true, isAuth: true }
+  // { href: "/", name: "uploads", exact: true, isAuth: true }
 ];
 
 const Navigation = (props) => {
