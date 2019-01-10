@@ -21,7 +21,7 @@ class Uploads extends Component {
   }
 
   // GET FILES ***********************************************/
-  getFiles() {
+  getFiles = () =>  {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
@@ -83,7 +83,7 @@ class Uploads extends Component {
   }
 
   // INSERT FILE ***********************************************/
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
@@ -121,7 +121,7 @@ class Uploads extends Component {
   }
 
   // UPDATE FILES PRIVACY ***********************************************/
-  handleInputCheckbox(index) {
+  handleInputCheckbox = index => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     const { privacy, uploadUrl } = this.state.files[index];
@@ -154,7 +154,7 @@ class Uploads extends Component {
   }
 
   // DELETE FILES ***********************************************/
-  deleteUpload(index) {
+  deleteUpload = index => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     const url = window.location.protocol
