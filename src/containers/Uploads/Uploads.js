@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from '../../axios';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
 import FD from 'js-file-download';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -10,60 +12,59 @@ import './Uploads.scss';
 
 class Uploads extends Component {
   state = {
-    files: [],
+    // files: [],
     selectedFile: null,
-    showDetails: false,
+    showModal: false,
     fileDetails: null
   };
 
   componentDidMount() {
-    this.getFiles()
+    this.props.onFetchUploads()
   }
 
   // GET FILES ***********************************************/
-  getFiles = () =>  {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+  // getFiles = () =>  {
+  //   const token = localStorage.getItem('token');
+  //   const userId = localStorage.getItem('userId');
 
-    axios
-      .post(
-        window.location.protocol + '//localhost:3000/upload/files',
-        {
-          userId: userId
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          }
-        })
-      .then(res => {
-        this.setState({
-          files: res.data.info.uploads
-        });
-      })
-      .catch(err => {
-        console.log('err', err)
-      });
-
-  }
+  //   axios
+  //     .post(
+  //       window.location.protocol + '//localhost:3000/upload/files',
+  //       {
+  //         userId: userId
+  //       },
+  //       {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': 'Bearer ' + token
+  //         }
+  //       })
+  //     .then(res => {
+  //       this.setState({
+  //         files: res.data.info.uploads
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log('err', err)
+  //     });
+  // }
 
   // DOWNLOAD AND GET FILES DATA ***********************************************/
   getFileDownloadOrFileMetadata = (index, metadata = false) => {
     let url = window.location.protocol
-      + '//localhost:3000/upload/file/' + this.state.files[index].uploadName;
+      + '//localhost:3000/upload/file/' + this.props.files[index].uploadName;
     if (metadata) url += '?metadata=true';
 
     axios
       .get(url,
         {
           headers: {
-            'X-Access-Token': this.state.files[index]._id
+            'X-Access-Token': this.props.files[index]._id
           }
         })
       .then(res => {
         if (!metadata) {
-          FD(res, this.state.files[index].uploadName);
+          FD(res, this.props.files[index].uploadName);
         } else {
           let output = '';
           let i = 0;
@@ -72,7 +73,7 @@ class Uploads extends Component {
             output += '<strong>' + keys[i] + ':</strong> ' + res.data.upload[keys[i]] + ' <br/> ';
           }
           this.setState({
-            showDetails: true,
+            showModal: true,
             fileDetails: { __html: output }
           });
         }
@@ -108,7 +109,7 @@ class Uploads extends Component {
           return false;
         }
 
-        let updatedFiles = this.state.files.slice();
+        let updatedFiles = this.props.files.slice();
         updatedFiles.push(res.data.upload);
         this.setState({
           files: updatedFiles,
@@ -124,12 +125,12 @@ class Uploads extends Component {
   handleInputCheckbox = index => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    const { privacy, uploadUrl } = this.state.files[index];
+    const { privacy, uploadUrl } = this.props.files[index];
 
     axios
       .put(
         window.location.protocol + 
-        '//localhost:3000/upload/file/' + this.state.files[index]._id,
+        '//localhost:3000/upload/file/' + this.props.files[index]._id,
         {
           userId: userId,
           privacy: !privacy,
@@ -142,7 +143,7 @@ class Uploads extends Component {
           }
         })
       .then(res => {
-        const updatedFiles = [...this.state.files];
+        const updatedFiles = [...this.props.files];
         updatedFiles[index] = res.data.upload
         this.setState({
           files: updatedFiles
@@ -154,33 +155,33 @@ class Uploads extends Component {
   }
 
   // DELETE FILES ***********************************************/
-  deleteUpload = index => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    const url = window.location.protocol
-      + '//localhost:3000/upload/file/' + this.state.files[index]._id;
-    axios.delete(
-      url,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        data: {
-          userId: userId
-        }
-      })
-      .then(res => {
-        let updatedFiles = [...this.state.files];
-        updatedFiles.splice(index, 1);
-        this.setState({
-          files: updatedFiles
-        });
-      })
-      .catch(err => {
-        console.log('err', err)
-      });
-  }
+  // deleteUpload = index => {
+  //   const token = localStorage.getItem('token');
+  //   const userId = localStorage.getItem('userId');
+  //   const url = window.location.protocol
+  //     + '//localhost:3000/upload/file/' + this.props.files[index]._id;
+  //   axios.delete(
+  //     url,
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer ' + token
+  //       },
+  //       data: {
+  //         userId: userId
+  //       }
+  //     })
+  //     .then(res => {
+  //       let updatedFiles = [...this.props.files];
+  //       updatedFiles.splice(index, 1);
+  //       this.setState({
+  //         files: updatedFiles
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log('err', err)
+  //     });
+  // }
 
   // SELECT FILE TO UPLOAD ***********************************************/
   handleselectedFile = event => {
@@ -191,20 +192,20 @@ class Uploads extends Component {
   }
 
   // SELECT FILE TO UPLOAD ***********************************************/
-  showDetailsCancelHandler = () => {
-    this.setState({ showDetails: false });
+  showModalCancelHandler = () => {
+    this.setState({ showModal: false });
   }
 
   render() {
-    if (!this.state.files) {
+    if (!this.props.files) {
       return <Spinner />;
     }
     else {
       return (
         <div className="Uploads">
           <Modal
-            show={this.state.showDetails}
-            modalClosed={this.showDetailsCancelHandler}>
+            show={this.state.showModal}
+            modalClosed={this.showModalCancelHandler}>
             <div dangerouslySetInnerHTML={this.state.fileDetails} />;
           </Modal>
           <form onSubmit={this.handleSubmit}>
@@ -217,9 +218,9 @@ class Uploads extends Component {
             </div>
           </form>
           <UploadsTable
-            files={this.state.files}
+            files={this.props.files}
             getFileDownloadOrFileMetadata={this.getFileDownloadOrFileMetadata}
-            deleteUpload={this.deleteUpload}
+            deleteUpload={this.props.onDeleteUploads}
             handleInputCheckbox={this.handleInputCheckbox}
           />
         </div>
@@ -228,4 +229,17 @@ class Uploads extends Component {
   }
 };
 
-export default Uploads;
+const mapStateToProps = state => {
+  return {
+    files: state.uploads.files
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFetchUploads: () => dispatch(actions.fetchUploads()),
+    onDeleteUploads: (index, uploadId) => dispatch(actions.deleteUploads(index, uploadId))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Uploads);

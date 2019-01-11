@@ -9,7 +9,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
 //import reducers
-// import homeReducer from './store/reducers/home';
+import uploadsReducer from './store/reducers/uploads';
 import authReducer from './store/reducers/auth';
 
 //redux debugging
@@ -18,7 +18,7 @@ const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX
 // get reducers
 const rooteReducers = combineReducers({
   auth: authReducer,
-  // home: homeReducer
+  uploads: uploadsReducer
 })
 
 // init a store

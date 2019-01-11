@@ -5,6 +5,7 @@ import { FaFileDownload, FaInfoCircle, FaTrashAlt } from "react-icons/fa";
 import Moment from 'react-moment';
 
 const Uploads = (props) => (
+  
   <table className="table">
     <thead>
       <tr>
@@ -46,7 +47,7 @@ const Uploads = (props) => (
           <td>
             <FaTrashAlt
               className="ActionBtn"
-              onClick={() => props.deleteUpload(index)}>
+              onClick={() => props.deleteUpload(index, file._id)}>
             </FaTrashAlt>
           </td>
         </tr>
