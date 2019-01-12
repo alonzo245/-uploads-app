@@ -35,13 +35,13 @@ const Uploads = (props) => (
           <td>
             <FaFileDownload
               className="ActionBtn"
-              onClick={() => props.getFileDownloadOrFileMetadata(index)}>
+              onClick={() => props.getFileDownloadOrFileMetadata(file)}>
             </FaFileDownload>
           </td>
           <td>
             <FaInfoCircle
               className="ActionBtn"
-              onClick={() => props.getFileDownloadOrFileMetadata(index, true)}>
+              onClick={() => props.getFileDownloadOrFileMetadata(file, true)}>
             </FaInfoCircle>
           </td>
           <td>

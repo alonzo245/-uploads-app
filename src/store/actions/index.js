@@ -7,5 +7,9 @@ export {
 export {
   fetchUploads,
   deleteUploads,
-  updatePrivacyUpload
+  updatePrivacyUpload,
+  fetchUploadDataOrDownload,
+  prepareFileUpload,
+  uploadFileSubmit,
+  hideModal
 } from './uploads.js';
