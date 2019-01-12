@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  // baseURL: 'https://psssquadproductions.firebaseio.com'
-  baseURL: ''
+  baseURL:  window.location.protocol+'//localhost:3000'
 });
 
 export default instance;

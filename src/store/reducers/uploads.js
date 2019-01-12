@@ -18,10 +18,17 @@ const deleteUpload = (state, action) => {
   return updateObject(state, { files: updatedFiles });
 };
 
+const updatePrivacyUpload = (state, action) => {
+  const updatedFiles = [...state.files];
+  updatedFiles[action.index] = action.uploadData
+  return updateObject(state, { files: updatedFiles });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_UPLOADS: return fetchUploads(state, action);
     case actionTypes.DELETE_UPLOAD: return deleteUpload(state, action);
+    case actionTypes.UPDATE_UPLOAD_PRIVACY: return updatePrivacyUpload(state, action);
     default:
       return state;
   }

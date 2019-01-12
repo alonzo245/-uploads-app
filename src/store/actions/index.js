@@ -6,5 +6,6 @@ export {
 } from './auth';
 export {
   fetchUploads,
-  deleteUploads
+  deleteUploads,
+  updatePrivacyUpload
 } from './uploads.js';

@@ -27,7 +27,7 @@ const Uploads = (props) => (
           <td>
             <input type="checkbox" name="privacy"
               checked={file.privacy ? "checked" : ""}
-              onChange={() => props.handleInputCheckbox(index)}
+              onChange={() => props.updatePrivacyUpload(index, file)}
             />
           </td>
           <td><Moment format="DD/MM/YYYY HH:MM" date={file.createdAt} /></td>

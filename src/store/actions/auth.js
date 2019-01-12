@@ -55,14 +55,9 @@ export const auth = (email = null, password = null, isSignup = false) => {
             password: password
         };
 
-        let baseUrl = '';
-        if (window.location.hostname === "localhost") {
-            baseUrl = window.location.protocol + '//localhost:3000';
-        }
-
-        let url = baseUrl + '/auth/login';
+        let url = '/auth/login';
         if (isSignup) {
-            url = baseUrl + '/auth/signup';
+            url = '/auth/signup';
         }
 
         axios.post(url, authData)

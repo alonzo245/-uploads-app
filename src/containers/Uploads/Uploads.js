@@ -7,6 +7,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Modal from '../../components/UI/Modal/Modal';
 import UploadsTable from '../../components/UploadsTable/UploadsTable';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import './Uploads.scss';
 
 
@@ -22,37 +23,9 @@ class Uploads extends Component {
     this.props.onFetchUploads()
   }
 
-  // GET FILES ***********************************************/
-  // getFiles = () =>  {
-  //   const token = localStorage.getItem('token');
-  //   const userId = localStorage.getItem('userId');
-
-  //   axios
-  //     .post(
-  //       window.location.protocol + '//localhost:3000/upload/files',
-  //       {
-  //         userId: userId
-  //       },
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': 'Bearer ' + token
-  //         }
-  //       })
-  //     .then(res => {
-  //       this.setState({
-  //         files: res.data.info.uploads
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.log('err', err)
-  //     });
-  // }
-
   // DOWNLOAD AND GET FILES DATA ***********************************************/
   getFileDownloadOrFileMetadata = (index, metadata = false) => {
-    let url = window.location.protocol
-      + '//localhost:3000/upload/file/' + this.props.files[index].uploadName;
+    let url = '/upload/file/' + this.props.files[index].uploadName;
     if (metadata) url += '?metadata=true';
 
     axios
@@ -96,7 +69,7 @@ class Uploads extends Component {
 
     axios
       .post(
-        window.location.protocol + '//localhost:3000/upload/file',
+        window.location.protocol + '/upload/file',
         formData,
         {
           headers: {
@@ -120,68 +93,6 @@ class Uploads extends Component {
         console.log('err', err)
       });
   }
-
-  // UPDATE FILES PRIVACY ***********************************************/
-  handleInputCheckbox = index => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    const { privacy, uploadUrl } = this.props.files[index];
-
-    axios
-      .put(
-        window.location.protocol + 
-        '//localhost:3000/upload/file/' + this.props.files[index]._id,
-        {
-          userId: userId,
-          privacy: !privacy,
-          uploadUrl: uploadUrl
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          }
-        })
-      .then(res => {
-        const updatedFiles = [...this.props.files];
-        updatedFiles[index] = res.data.upload
-        this.setState({
-          files: updatedFiles
-        });
-      })
-      .catch(err => {
-        console.log('err', err)
-      });
-  }
-
-  // DELETE FILES ***********************************************/
-  // deleteUpload = index => {
-  //   const token = localStorage.getItem('token');
-  //   const userId = localStorage.getItem('userId');
-  //   const url = window.location.protocol
-  //     + '//localhost:3000/upload/file/' + this.props.files[index]._id;
-  //   axios.delete(
-  //     url,
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': 'Bearer ' + token
-  //       },
-  //       data: {
-  //         userId: userId
-  //       }
-  //     })
-  //     .then(res => {
-  //       let updatedFiles = [...this.props.files];
-  //       updatedFiles.splice(index, 1);
-  //       this.setState({
-  //         files: updatedFiles
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.log('err', err)
-  //     });
-  // }
 
   // SELECT FILE TO UPLOAD ***********************************************/
   handleselectedFile = event => {
@@ -221,7 +132,7 @@ class Uploads extends Component {
             files={this.props.files}
             getFileDownloadOrFileMetadata={this.getFileDownloadOrFileMetadata}
             deleteUpload={this.props.onDeleteUploads}
-            handleInputCheckbox={this.handleInputCheckbox}
+            updatePrivacyUpload={this.props.onUpdatePrivacyUpload}
           />
         </div>
       )
@@ -238,8 +149,99 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchUploads: () => dispatch(actions.fetchUploads()),
-    onDeleteUploads: (index, uploadId) => dispatch(actions.deleteUploads(index, uploadId))
+    onDeleteUploads: (index, uploadId) => dispatch(actions.deleteUploads(index, uploadId)),
+    onUpdatePrivacyUpload: (index, uploadId) => dispatch(actions.updatePrivacyUpload(index, uploadId))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Uploads);
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler( Uploads, axios ));
+
+
+  // DELETE FILES ***********************************************/
+  // deleteUpload = index => {
+  //   const token = localStorage.getItem('token');
+  //   const userId = localStorage.getItem('userId');
+  //   const url = window.location.protocol
+  //     + '//localhost:3000/upload/file/' + this.props.files[index]._id;
+  //   axios.delete(
+  //     url,
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer ' + token
+  //       },
+  //       data: {
+  //         userId: userId
+  //       }
+  //     })
+  //     .then(res => {
+  //       let updatedFiles = [...this.props.files];
+  //       updatedFiles.splice(index, 1);
+  //       this.setState({
+  //         files: updatedFiles
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log('err', err)
+  //     });
+  // }
+
+    // GET FILES ***********************************************/
+  // getFiles = () =>  {
+  //   const token = localStorage.getItem('token');
+  //   const userId = localStorage.getItem('userId');
+
+  //   axios
+  //     .post(
+  //       window.location.protocol + '//localhost:3000/upload/files',
+  //       {
+  //         userId: userId
+  //       },
+  //       {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': 'Bearer ' + token
+  //         }
+  //       })
+  //     .then(res => {
+  //       this.setState({
+  //         files: res.data.info.uploads
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log('err', err)
+  //     });
+  // }
+  
+    // UPDATE FILES PRIVACY ***********************************************/
+  // handleInputCheckbox = index => {
+  //   const token = localStorage.getItem('token');
+  //   const userId = localStorage.getItem('userId');
+  //   const { privacy, uploadUrl } = this.props.files[index];
+
+  //   axios
+  //     .put(
+  //       window.location.protocol + 
+  //       '/upload/file/' + this.props.files[index]._id,
+  //       {
+  //         userId: userId,
+  //         privacy: !privacy,
+  //         uploadUrl: uploadUrl
+  //       },
+  //       {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': 'Bearer ' + token
+  //         }
+  //       })
+  //     .then(res => {
+  //       const updatedFiles = [...this.props.files];
+  //       updatedFiles[index] = res.data.upload
+  //       this.setState({
+  //         files: updatedFiles
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log('err', err)
+  //     });
+  // }
