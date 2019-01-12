@@ -13,7 +13,6 @@ import './Uploads.scss';
 
 class Uploads extends Component {
   state = {
-    // files: [],
     selectedFile: null,
     showModal: false,
     fileDetails: null
